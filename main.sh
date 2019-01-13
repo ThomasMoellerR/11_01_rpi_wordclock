@@ -1,1 +1,1 @@
-sudo python3 "/home/pi/a/main.py"
+sudo python3 "/home/pi/a/wordclock/main.py"

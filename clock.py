@@ -55,14 +55,14 @@ class wordclock:
         self.rgb_brightness_pixelmap = np.zeros((114,3), dtype=np.uint8)
         self.fixed_color = (0,255,0)
 
-    def random_pixels(self):
+    def no_time_availabe(self):
         self.rgb_brightness_pixelmap = np.zeros((114,3), dtype=np.uint8)
 
-        color = (255,255,255)
-        self.rgb_brightness_pixelmap[110] = color
-        self.rgb_brightness_pixelmap[111] = color
-        self.rgb_brightness_pixelmap[112] = color
-        self.rgb_brightness_pixelmap[113] = color
+        #color = (255,255,255)
+        #self.rgb_brightness_pixelmap[110] = color
+        #self.rgb_brightness_pixelmap[111] = color
+        #self.rgb_brightness_pixelmap[112] = color
+        #self.rgb_brightness_pixelmap[113] = color
 
 
     def get_pixelmap(self):

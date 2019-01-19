@@ -5,6 +5,8 @@ import threading
 from clock import wordclock
 import paho.mqtt.client as mqtt
 import socket
+import argparse
+import os
 
 
 def display(pixelmap):
@@ -56,7 +58,7 @@ def thread1():
 
             minutes_last = minutes
         else:
-            clock_object.random_pixels()
+            clock_object.no_time_availabe()
             pixelmap = clock_object.get_pixelmap()
             display(pixelmap)
 
@@ -71,17 +73,31 @@ def thread1():
 
 
 def thread2():
+    global client
+
     while True:
+
         client.on_connect = on_connect
         client.on_message = on_message
 
-        client.connect("192.168.2.52", 1883, 60)
+        try_to_connect = True
+
+        while try_to_connect:
+            try:
+                client.connect(args.mqtt_server_ip, int(args.mqtt_server_port), 60)
+                try_to_connect = False
+                break
+            except Exception as e:
+                print(e)
+
+
 
         # Blocking call that processes network traffic, dispatches callbacks and
         # handles reconnecting.
         # Other loop*() functions are available that give a threaded interface and a
         # manual interface.
         client.loop_forever()
+
 
 
 
@@ -104,7 +120,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     print(msg.topic + " "+ msg.payload.decode("utf-8"))
 
-    if msg.topic == "wordclock/brightness":
+    if msg.topic == args.mqtt_topic_set_brightness:
         clock_object.set_brightness(float(msg.payload.decode("utf-8")))
         pixelmap = clock_object.get_pixelmap()
         display(pixelmap)
@@ -140,6 +156,14 @@ def on_message(client, userdata, msg):
         clock_object.set_color((r, g, b))
         update_time()
 
+
+# Argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--mqtt_server_ip", help="")
+parser.add_argument("--mqtt_server_port", help="")
+parser.add_argument("--mqtt_topic_set_brightness", help="")
+args = parser.parse_args()
+
 # LED strip configuration:
 LED_COUNT   = 114      # Number of LED pixels.
 LED_PIN     = 18      # GPIO pin connected to the pixels (must support PWM!).
@@ -149,7 +173,7 @@ LED_INVERT  = False   # True to invert the signal (when using NPN transistor lev
 strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT)
 strip.begin()
 
-time.sleep(10) # WLAN Connection
+
 client = mqtt.Client()
 
 clock_object = wordclock()

@@ -110,7 +110,7 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("wordclock/brightness")
+    client.subscribe(args.mqtt_topic_set_brightness)
     client.subscribe("wordclock/mode")
     client.subscribe("wordclock/color")
 

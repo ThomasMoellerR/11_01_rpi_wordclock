@@ -65,7 +65,7 @@ def thread1():
 
         #print(is_connected())
 
-        client.publish("wordclock/time", hours + ":" + minutes + ":" + seconds, qos=0, retain=False)
+        client.publish(args.mqtt_topic_get_time, hours + ":" + minutes + ":" + seconds, qos=0, retain=False)
 
         time.sleep(1.0)
 
@@ -111,8 +111,8 @@ def on_connect(client, userdata, flags, rc):
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe(args.mqtt_topic_set_brightness)
-    client.subscribe("wordclock/mode")
-    client.subscribe("wordclock/color")
+    client.subscribe(args.mqtt_topic_set_mode)
+    client.subscribe(args.mqtt_topic_set_color)
 
 
 
@@ -125,7 +125,7 @@ def on_message(client, userdata, msg):
         pixelmap = clock_object.get_pixelmap()
         display(pixelmap)
 
-    if msg.topic == "wordclock/mode":
+    if msg.topic == args.mqtt_topic_set_mode:
         if msg.payload.decode("utf-8") == "SAME_COLOR" or msg.payload.decode("utf-8") == "WORD_RANDOM_COLOR" or msg.payload.decode("utf-8") == "CHARACTER_RANDOM_COLOR":
             clock_object.set_mode(msg.payload.decode("utf-8"))
             update_time()
@@ -138,7 +138,7 @@ def on_message(client, userdata, msg):
             display(pixelmap)
 
 
-    if msg.topic == "wordclock/color":
+    if msg.topic == args.mqtt_topic_set_color:
         color = msg.payload.decode("utf-8")
         if color[0] == "#":
             r = color[1:3]
@@ -162,6 +162,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--mqtt_server_ip", help="")
 parser.add_argument("--mqtt_server_port", help="")
 parser.add_argument("--mqtt_topic_set_brightness", help="")
+parser.add_argument("--mqtt_topic_set_mode", help="")
+parser.add_argument("--mqtt_topic_set_color", help="")
+parser.add_argument("--mqtt_topic_get_time", help="")
 args = parser.parse_args()
 
 # LED strip configuration:

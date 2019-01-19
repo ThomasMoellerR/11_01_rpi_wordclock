@@ -41,7 +41,9 @@ def thread1():
     minutes_last = "0"
 
     while True:
+
         if (is_connected()):
+            print("time available")
             hours = time.strftime("%H")
             minutes = time.strftime("%M")
             seconds = time.strftime("%S")
@@ -55,6 +57,7 @@ def thread1():
 
             minutes_last = minutes
         else:
+            print("no time available")
             clock_object.no_time_availabe()
             pixelmap = clock_object.get_pixelmap()
             display(pixelmap)

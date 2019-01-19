@@ -36,7 +36,7 @@ def update_time():
     pixelmap = clock_object.get_pixelmap()
     display(pixelmap)
 
-def thread1():
+def thread2():
 
     minutes_last = "0"
 
@@ -72,7 +72,7 @@ def thread1():
 
 
 
-def thread2():
+def thread1():
     global client
 
     while True:
@@ -185,4 +185,5 @@ t1= threading.Thread(target=thread1)
 t2= threading.Thread(target=thread2)
 
 t1.start()
+time.sleep(1)
 t2.start()

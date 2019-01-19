@@ -51,10 +51,7 @@ def thread1():
             if minutes_last != minutes:
                 print("update time")
 
-                clock_object.set_time(int(hours),int(minutes))
-                clock_object.update()
-                pixelmap = clock_object.get_pixelmap()
-                display(pixelmap)
+                update_time()
 
             minutes_last = minutes
         else:
